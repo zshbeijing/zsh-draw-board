@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import DrawBoard from '@/view/DrawBoard/index.vue'
 </script>
 
 <template>
-<div class="wrapper"></div>
+<DrawBoard />
 </template>
 
 <style scoped>
