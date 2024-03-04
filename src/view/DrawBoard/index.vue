@@ -4,8 +4,12 @@
         <Head />
     </div>
     <div class="main">
-        <div class="material">material</div>
-        <div class="canvas">canvas</div>
+        <div class="material">
+          <Material />
+        </div>
+        <div class="canvas">
+            <Canvas />
+        </div>
         <div class="operation">operation</div>
     </div>
 </div>
@@ -13,6 +17,8 @@
 
 <script setup lang="ts">
 import Head from '@/components/Head/index.vue'
+import Material from '@/components/Material/index.vue'
+import Canvas from '@/components/Canvas/index.vue'
 
 </script>
 
@@ -38,13 +44,14 @@ import Head from '@/components/Head/index.vue'
         background-color: #ccc;
         .material {
             flex-shrink: 0;
-            width: 240px;
+            width: 140px;
             height: 100%;
+            padding: 10px;
             background-color: #53d641;
         }
         .operation {
             flex-shrink: 0;
-            width: 240px;
+            width: 340px;
             height: 100%;
             background-color: #ee9816;
         }
