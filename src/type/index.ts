@@ -65,6 +65,6 @@ export namespace Canvas {
     export interface CanvasJson {
       name: string,
       nodeList:NodeItem[],
-      lineList:[]
+      lineList:LineItem[]
     } 
 }
