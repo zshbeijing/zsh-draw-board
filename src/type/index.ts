@@ -17,9 +17,9 @@ export enum NodeState {
 }
 
 export enum LineType {
-    直线 = "Straight",
-    折线 = "Broken",
-    贝斯曲线 = "Bezier"
+    直线 = "line",
+    折线 = "polyline",
+    贝斯曲线 = "bezier"
 }
 
 export namespace Head {
@@ -59,7 +59,7 @@ export namespace Canvas {
       fromId:string
       toId:string
       label:string
-      lineType: EnumToUnion<LineType>
+      type: EnumToUnion<LineType>
     }
 
     export interface CanvasJson {
@@ -67,4 +67,9 @@ export namespace Canvas {
       nodeList:NodeItem[],
       lineList:LineItem[]
     } 
+
+    export interface LogicFlowOptions {
+        container:HTMLElement
+        [propName: string]:any
+    }
 }

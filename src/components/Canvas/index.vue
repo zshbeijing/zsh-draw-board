@@ -1,5 +1,6 @@
 <template>
 <div 
+  id="canvas"
   class="canvas_wrapper"
   @drop="dropNow($event)"
   @dragstart="dragStart($event)"
@@ -11,15 +12,31 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive,onMounted,ref } from 'vue'
 import type { Canvas,Material } from '@/type/index'
 import { useCreateJson } from '@/hooks/useNodeJson'
+import "@logicflow/core/dist/style/index.css";
+import { useLogicFlow } from '@/hooks/useLogicFlow'
+
 
 const canvasJson = reactive<Canvas.CanvasJson>({
   name: "",
   nodeList: [],
   lineList: []
 });
+
+const lf = ref()
+
+onMounted(() => {
+  lf.value = useLogicFlow({
+    container: document.querySelector("#canvas")!,
+    grid: false
+  })
+  jsonRender()
+  
+})
+
+
 
 const dropNow = (event:DragEvent) => {
   const { offsetX, offsetY } = event
@@ -40,6 +57,49 @@ const dragOver = (event:DragEvent) => {
 
 const dragLeave = (event:DragEvent) => {
   console.log("dragLeave",event);
+}
+
+const jsonRender = () => {
+  lf.value.render({
+  nodes: [
+    {
+      id: "1",
+      type: "start",
+      x: 100,
+      y: 100,
+      text: "开始",
+    },
+    {
+      id: "2",
+      type: "state",
+      x: 300,
+      y: 200,
+      text: "节点2",
+    },
+    {
+      id: '3',
+      type: "condition",
+      x: 400,
+      y: 200,
+      text: "节点3",
+    },
+    {
+      id: '4',
+      type: "end",
+      x: 500,
+      y: 100,
+      text: "节点4"
+    }
+  ],
+  edges: [
+    {
+      sourceNodeId: "1",
+      targetNodeId: "2",
+      type: "polyline",
+      text: "连线",
+    },
+  ],
+});
 }
 
 

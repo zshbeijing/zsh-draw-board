@@ -19,7 +19,7 @@ interface Props {
 }
 const props = withDefaults(defineProps<Props>(),{
   prefix:'icon',
-  color: "#fff",
+  color: "#000",
   height: "30",
   width: "30"
 })
