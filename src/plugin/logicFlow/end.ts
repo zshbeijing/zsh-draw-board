@@ -52,7 +52,7 @@ class CustomCircleModel extends CircleNodeModel {
           data.text = {
           value: data.text || "",
           x: data.x,
-          y: data.y + 30
+          y: data.y + 30,
           }
         }
         super.initNodeData(data);

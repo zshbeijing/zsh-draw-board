@@ -19,6 +19,10 @@
 import Head from '@/components/Head/index.vue'
 import Material from '@/components/Material/index.vue'
 import Canvas from '@/components/Canvas/index.vue'
+import { provide, ref } from 'vue';
+
+const lf = ref()
+provide("lf",lf)
 
 </script>
 

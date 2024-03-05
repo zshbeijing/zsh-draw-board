@@ -4,11 +4,23 @@ export declare type EnumToUnion<T extends string | number> = T extends string ? 
 export enum DropKey {
     json = "nodeJson"
 }
+export enum DefaultText {
+
+}
 export enum TypeEnum {
+    // 框架默认属性
+    矩形 = 'rect',
+    圆形 = 'circle',
+    椭圆 = 'ellipse',
+    多边形 = 'polygon',
+    菱形 = 'diamond',
+    文本 = "text",
+    HTML = "html",
+    // 自定义属性
     开始 = 'start',
     状态 = 'state',
     条件 = 'condition',
-    结束 = 'end'
+    结束 = 'end',
 }
 
 export enum NodeState {
@@ -43,29 +55,24 @@ export namespace Material {
 export namespace Canvas {
     export interface NodeItem {
         // 组件唯一标识
-        id?:string
-        // 组件名称
-        name:string
+        id:string
         // 组件类型
         type: EnumToUnion<TypeEnum>
         // 组件位置
-        left:number
-        top:number
-        // 组件状态
-        state:NodeState
+        text:string
+        properties:Object
     }
 
     export interface LineItem {
-      fromId:string
-      toId:string
-      label:string
+      sourceNodeId:string
+      targetNodeId:string
+      text:string
       type: EnumToUnion<LineType>
     }
 
     export interface CanvasJson {
-      name: string,
-      nodeList:NodeItem[],
-      lineList:LineItem[]
+      nodes:NodeItem[],
+      edges:LineItem[]
     } 
 
     export interface LogicFlowOptions {
