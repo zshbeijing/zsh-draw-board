@@ -10,6 +10,7 @@
 import { reactive,onMounted,ref,watch,inject } from 'vue'
 import type { Canvas } from '@/type/index'
 import "@logicflow/core/dist/style/index.css";
+import "@logicflow/extension/lib/style/index.css";
 import { useLogicFlow } from '@/hooks/useLogicFlow'
 import type { Ref } from 'vue'
 
