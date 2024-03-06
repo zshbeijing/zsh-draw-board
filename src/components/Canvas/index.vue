@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { reactive,onMounted,ref,watch,inject } from 'vue'
-import type { Canvas,Material } from '@/type/index'
+import type { Canvas } from '@/type/index'
 import "@logicflow/core/dist/style/index.css";
 import { useLogicFlow } from '@/hooks/useLogicFlow'
 import type { Ref } from 'vue'
@@ -23,7 +23,11 @@ const lf:Ref<any> = inject("lf")!
 onMounted(() => {
   lf.value = useLogicFlow({
     container: document.querySelector("#canvas")!,
-    grid: true
+    grid: {
+      size: 10,
+      visible: true,
+      type: "mesh"
+    }
   })
   jsonRender()
 })
@@ -32,13 +36,6 @@ const jsonRender = () => {
   lf.value.render(canvasJson);
 }
 
-watch(canvasJson.nodes,() => {
-  jsonRender()
-},
-{
-  deep: true
-}
-)
 
 
 </script>

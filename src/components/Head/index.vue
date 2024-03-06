@@ -1,6 +1,9 @@
 <template>
     <div class="head_wrapper">
-      <div class="btn_item" v-for="i in btn_list" :key="i.key">
+      <div class="btn_item" 
+        v-for="i in btn_list" :key="i.key"
+        @click="btnHandler(i)"
+      >
         <antIcon class="icon" :icon="i.icon" />
       <span> {{ i.label }} </span>
       </div>
@@ -10,6 +13,7 @@
 <script setup lang="ts">
 import { antIcon } from '@/components/AntIcon'
 import type { Head }  from "@/type/index"
+import { inject } from 'vue'
 const btn_list:Head.BtnItem[] = [
     {
         key: "import",
@@ -27,6 +31,18 @@ const btn_list:Head.BtnItem[] = [
       icon: "SearchOutlined"
     }
 ]
+
+const btnHandler = (i:Head.BtnItem) => {
+  switch (i.key) {
+    case "import":
+      importHandler();
+  }
+}
+
+
+const importHandler = () => {
+}
+
 </script>
 
 <style scoped lang="less">
