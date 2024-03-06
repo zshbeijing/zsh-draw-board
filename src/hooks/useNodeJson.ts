@@ -14,11 +14,12 @@ export const useCreateJson = (type:Material.MaterialType, offsetX:number, offset
   }
   let obj:Canvas.NodeItem = {
     id:getId(12),
-    name: "",
+    text: "",
     type:type,
     left:offsetX,
     top:offsetY,
-    state: NodeState.未激活
+    state: NodeState.未激活,
+    properties: {}
   }
   return obj
 }

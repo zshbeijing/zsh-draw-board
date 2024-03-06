@@ -42,6 +42,26 @@ const dragLeave = (event:DragEvent) => {
   console.log("dragLeave",event);
 }
 
+const throttle = (fn:Function) => {
+  let lock = false
+  return function (this:any,...args:any[]) {
+    if (lock) return
+    lock = true
+    window.requestAnimationFrame(() => {
+      fn.apply(this,args)
+      lock = false
+    })
+  }
+}
+
+const jsonRender = () => {
+  
+}
+
+
+
+
+
 
 </script>
 

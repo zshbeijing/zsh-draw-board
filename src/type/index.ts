@@ -44,8 +44,8 @@ export namespace Canvas {
     export interface NodeItem {
         // 组件唯一标识
         id?:string
-        // 组件名称
-        name:string
+        // 组件内容
+        text:string
         // 组件类型
         type: EnumToUnion<TypeEnum>
         // 组件位置
@@ -53,6 +53,7 @@ export namespace Canvas {
         top:number
         // 组件状态
         state:NodeState
+        properties:Object
     }
 
     export interface LineItem {
