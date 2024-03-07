@@ -19,6 +19,7 @@ export const useCreateJson = (type:Material.MaterialType, offsetX:number, offset
     left:offsetX,
     top:offsetY,
     state: NodeState.未激活,
+    isDrop:true,
     properties: {}
   }
   return obj

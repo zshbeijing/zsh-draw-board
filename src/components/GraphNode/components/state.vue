@@ -10,7 +10,7 @@
      stroke-width="2"
      rx="8"
      ry="8" />
-   <text dominant-baseline="middle" x="35" y="35">{{ text }}</text>
+   <text class="hoverAble" dominant-baseline="middle" x="35" y="35">{{ text }}</text>
  </svg>
  </template>
  
@@ -23,5 +23,7 @@
  </script>
  
  <style scoped lang="less">
- 
+ text {
+  cursor: default;
+ }
  </style>

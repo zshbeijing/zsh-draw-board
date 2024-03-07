@@ -19,5 +19,7 @@
  </script>
  
  <style scoped lang="less">
- 
+ text {
+  cursor: default;
+ }
  </style>

@@ -55,6 +55,8 @@ export namespace Canvas {
         top:number
         // 组件状态
         state:NodeState
+        // 是否可移动
+        isDrop:Boolean
         properties:Object
     }
 

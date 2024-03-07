@@ -14,5 +14,7 @@ const text = computed(() => props.text)
 </script>
 
 <style scoped lang="less">
-
+text {
+  cursor: default;
+ }
 </style>

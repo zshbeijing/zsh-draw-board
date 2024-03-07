@@ -12,7 +12,7 @@ import end from './components/end.vue'
 import type { Canvas,GraphNode } from "@/type/index"
 import type { CSSProperties } from 'vue';
 import { computed,shallowRef } from 'vue';
-const props = defineProps<{ node:Canvas.NodeItem }>()
+const props = defineProps<{ node:Canvas.NodeItem,activeId:string }>()
 
 // component 组件枚举
 const componentList:GraphNode.ComponentList = {
@@ -30,16 +30,17 @@ const wrapperStyle = computed(() =>  ({
   position: "absolute",
   top: `${ props.node.top }px`,
   left: `${ props.node.left }px`,
-  transform: `translate(-40px,-40px)`
+  transform: `translate(-40px,-40px)`,
+  border: props.activeId === props.node.id ? "1px dashed #666" : "none"
 }) as CSSProperties)
 
 </script>
 
 <style scoped lang="less">
 .node-wrapper {
-  border: 1px dashed #666;
   padding: 5px;
   border-radius: 5px;
+  box-sizing: border-box;
   // background-color: #fff;
 }
 </style>
