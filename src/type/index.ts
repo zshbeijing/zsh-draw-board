@@ -1,3 +1,5 @@
+import type { Component } from 'vue'
+
 // 工具类型，将枚举类型转化为联合类型
 export declare type EnumToUnion<T extends string | number> = T extends string ? `${T}` : T
 
@@ -64,8 +66,13 @@ export namespace Canvas {
     }
 
     export interface CanvasJson {
-      name: string,
       nodeList:NodeItem[],
       lineList:LineItem[]
     } 
+}
+
+export namespace GraphNode {
+    export interface ComponentList {
+        [propName:string]:Component
+      }
 }

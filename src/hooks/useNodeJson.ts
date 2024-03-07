@@ -14,7 +14,7 @@ export const useCreateJson = (type:Material.MaterialType, offsetX:number, offset
   }
   let obj:Canvas.NodeItem = {
     id:getId(12),
-    text: "",
+    text: "节点",
     type:type,
     left:offsetX,
     top:offsetY,

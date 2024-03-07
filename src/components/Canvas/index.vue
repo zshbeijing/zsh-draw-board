@@ -6,7 +6,10 @@
   @dragover="dragOver($event)"
   @dragleave="dragLeave($event)"
 >
-  {{ JSON.stringify(canvasJson) }}
+  <GraphNode 
+    v-for="item in canvasJson.nodeList"
+    :node="item"
+    />
 </div>
 </template>
 
@@ -14,9 +17,9 @@
 import { reactive } from 'vue'
 import type { Canvas,Material } from '@/type/index'
 import { useCreateJson } from '@/hooks/useNodeJson'
+import GraphNode from '@/components/GraphNode/index.vue'
 
 const canvasJson = reactive<Canvas.CanvasJson>({
-  name: "",
   nodeList: [],
   lineList: []
 });
@@ -26,7 +29,7 @@ const dropNow = (event:DragEvent) => {
   const nodeType = event.dataTransfer!.getData("nodeJson") as Material.MaterialType
   const json = useCreateJson(nodeType,offsetX,offsetY)
   canvasJson.nodeList.push(json)
-  console.log(typeof(offsetX));
+  console.log("canvasJson",canvasJson);
 }
 
 const dragStart = (event:DragEvent) => {
@@ -67,6 +70,7 @@ const jsonRender = () => {
 
 <style scoped lang="less">
 .canvas_wrapper {
+  position: relative;
   width: 100%;
   height: 100%;
 }
