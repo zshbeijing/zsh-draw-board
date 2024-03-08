@@ -4,7 +4,7 @@
     v-for="i in materList" 
     :key="i.type"
     draggable="true" 
-    @dragstart="drag(i.type,$event)"
+    @dragstart="drag(i,$event)"
     >
       <SvgIcon class="svg_icon" :name="i.img" />
       <span class="material_label">{{ i.label }}</span>
@@ -23,9 +23,9 @@ import { List } from './config'
 const materList = ref(List)
 
 // 拖拽
-const drag = (type:Material.MaterialType ,event:DragEvent) => {
-  console.log("drag",type);
-  event.dataTransfer!.setData('nodeJson',type)
+const drag = (i:Material.MaterialItem ,event:DragEvent) => {
+  console.log("drag",i);
+  event.dataTransfer!.setData('nodeJson',JSON.stringify(i))
 }
 
 // 生成默认json

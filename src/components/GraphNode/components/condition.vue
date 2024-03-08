@@ -1,23 +1,24 @@
 <template>
-  <g transform="translate(-50,-35)">
+  <g :transform="`translate(-${(props.graphProperties.width! || 0) / 2},-${(props.graphProperties.height! || 0 )/ 2})`">
     <polygon :points="points" fill-opacity="0" stroke="white" stroke-width="2" />
     <text text-anchor="middle" dominant-baseline="middle" :x="textX" :y="textY">{{ text }}</text>
   </g>
 </template>
 
 <script setup lang="ts">
-import type { Canvas, GraphNode } from '@/type/index'
+import type { GraphProperties } from '@/type/index'
 import { computed } from 'vue'
 const props = defineProps<{
   text: string
   left: number
   top: number
+  graphProperties:GraphProperties
 }>()
 const text = computed(() => props.text)
-const textX = computed(() => String(props.left + 50))
-const textY = computed(() => String(props.top + 35))
+const textX = computed(() => String(props.left + (props.graphProperties.width! || 0) /2))
+const textY = computed(() => String(props.top + (props.graphProperties.height! || 0) /2))
 const points = computed(() => {
-  let points = `${props.left} ${props.top + 35}, ${props.left + 50} ${props.top},${props.left + 100} ${props.top + 35}, ${props.left + 50} ${props.top + 70}`
+  let points = `${props.left} ${props.top + (props.graphProperties.height! || 0) /2}, ${props.left + (props.graphProperties.width! || 0) /2} ${props.top},${props.left + (props.graphProperties.width! || 0)} ${props.top + (props.graphProperties.height! || 0) /2}, ${props.left + (props.graphProperties.width! || 0) /2} ${props.top + (props.graphProperties.height! || 0)}`
   return points
 })
 </script>

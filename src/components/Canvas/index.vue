@@ -81,7 +81,7 @@ const mousemoveHandler = (e:any) => {
   if (flagX) {
     canvasJson.nodeList[moveIndex.value!].left = pointX
   }
-  const flagY = inBound(pointY,halfDomWidth,viewHeight.value)
+  const flagY = inBound(pointY,halfDomHeight,viewHeight.value)
   if (flagY) {
     canvasJson.nodeList[moveIndex.value!].top = pointY
   }
@@ -105,8 +105,10 @@ const mouseupHandler = (e:any,item:Canvas.NodeItem) => {
 
 const dropNow = (event:DragEvent) => {
   const { offsetX, offsetY } = event
-  const nodeType = event.dataTransfer!.getData("nodeJson") as Material.MaterialType
-  const json = useCreateJson(nodeType,offsetX,offsetY)
+  const defaultJson = JSON.parse(event.dataTransfer!.getData("nodeJson")) as Material.MaterialItem
+  console.log("defaultJson",defaultJson);
+  
+  const json = useCreateJson(defaultJson,offsetX,offsetY)
   canvasJson.nodeList.push(json)
   console.log("canvasJson",canvasJson);
 }

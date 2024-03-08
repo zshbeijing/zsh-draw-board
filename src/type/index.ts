@@ -25,6 +25,8 @@ export enum LineType {
 }
 
 export namespace Head {
+
+  
     export interface BtnItem {
         key:string
         label:string
@@ -32,6 +34,11 @@ export namespace Head {
     }
 }
 
+export interface GraphProperties {
+    r?:number
+    width?:number
+    height?:number
+}
 export namespace Material {
    
     export type MaterialType = EnumToUnion<TypeEnum>
@@ -39,6 +46,7 @@ export namespace Material {
         type:MaterialType
         label:string
         img:string
+        graphProperties:GraphProperties 
     }
 }
 
@@ -57,6 +65,7 @@ export namespace Canvas {
         state:NodeState
         // 是否可移动
         isDrop:Boolean
+        graphProperties:GraphProperties
         properties:Object
     }
 
