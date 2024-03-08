@@ -46,10 +46,11 @@ const isMove = ref<Boolean>(false)
 const moveDom = ref<Element>()
 const downTop = ref<number>(0)
 const downLeft = ref<number>(0)
-const viewHeight = ref<number>()
-const viewWidth = ref<number>()
-const viewTop = ref<number>()
-const viewLeft = ref<number>()
+// 视口属性
+const viewHeight = ref<number>(0)
+const viewWidth = ref<number>(0)
+const viewTop = ref<number>(0)
+const viewLeft = ref<number>(0)
 
 onMounted(() => {
   viewLeft.value = canvasRef.value?.getBoundingClientRect().left || 0
@@ -67,57 +68,35 @@ const mousedownHandler = (item:Canvas.NodeItem,e:any) => {
   downTop.value = e.clientY - moveDom.value!.getBoundingClientRect().top - (moveDom.value!.getBoundingClientRect().height /2)
   downLeft.value = e.clientX - moveDom.value!.getBoundingClientRect().left - (moveDom.value!.getBoundingClientRect().width /2)
   isMove.value = true
-  moveDom.value?.addEventListener("mousemove",mousemoveHandler)
+  canvasRef.value?.addEventListener("mousemove",mousemoveHandler)
 }
 
 const mousemoveHandler = (e:any) => {
-  if (!isMove) return
+  if (!isMove || !moveDom.value) return
   const pointX = e.clientX - downLeft.value - viewLeft.value!
   const pointY = e.clientY - downTop.value - viewTop.value!
-  // console.log("moveIndex",pointX,pointY);
-  canvasJson.nodeList[moveIndex.value!].top = pointY
-  canvasJson.nodeList[moveIndex.value!].left = pointX
-  // console.log("mousemoveHandler",canvasJson.nodeList[moveIndex.value!]);
+  const halfDomWidth = moveDom.value!.getBoundingClientRect().width / 2
+  const halfDomHeight = moveDom.value!.getBoundingClientRect().height / 2
+  const flagX = inBound(pointX,halfDomWidth,viewWidth.value)
+  if (flagX) {
+    canvasJson.nodeList[moveIndex.value!].left = pointX
+  }
+  const flagY = inBound(pointY,halfDomWidth,viewHeight.value)
+  if (flagY) {
+    canvasJson.nodeList[moveIndex.value!].top = pointY
+  }
+}
+
+const inBound = (nodeDistance:number,halfLength:number,viewLength:number):Boolean => {
+  return halfLength < nodeDistance  && nodeDistance <   (viewLength - halfLength)
 }
 
 const mouseupHandler = (e:any,item:Canvas.NodeItem) => {
-  console.log("mouseupHandler");
   if (!moveDom.value) return
-  moveDom.value.removeEventListener("mousemove",mousemoveHandler)
+  canvasRef.value?.removeEventListener("mousemove",mousemoveHandler)
   moveDom.value = undefined
+  isMove.value = false
 }
-
-// 老版
-// const mousedownHandler = (item:Canvas.NodeItem,e:any) => {
-  // console.log("mousedownHandler",item,e);
-  // const index = canvasJson.nodeList.findIndex((i) => i.id === item.id)
-  // moveIndex.value = index
-  // downTop.value = e.offsetY
-  // downLeft.value = e.offsetX
-  // isMove.value = true
-// }
-
-// const mousemoveHandler = (item:Canvas.NodeItem,e:any) => {
-//   if (!isMove.value || moveIndex.value === undefined || !item.isDrop) return
-//   console.log("move",e);
-//   const moveX = e.offsetX - downLeft.value
-//   const moveY = e.offsetY - downTop.value
-//   canvasJson.nodeList[moveIndex.value].top += moveY
-//   canvasJson.nodeList[moveIndex.value].left += moveX
-// }
-// const mousemoveHandler = (item:Canvas.NodeItem,e:any) => {
-//   if (!isMove.value || moveIndex.value === undefined || !item.isDrop) return
-//   console.log("move",e);
-//   const moveX = e.offsetX - downLeft.value
-//   const moveY = e.offsetY - downTop.value
-//   canvasJson.nodeList[moveIndex.value].top += moveY
-//   canvasJson.nodeList[moveIndex.value].left += moveX
-// }
-// const mouseupHandler = () => {
-//   console.log("moveUp");
-//   moveIndex.value = undefined
-//   isMove.value = false
-// }
 
 
 

@@ -1,5 +1,8 @@
 <template>
-<g class="node-wrapper" ref="nodeWrapper" :style="wrapperStyle">
+<g class="node-wrapper" ref="nodeWrapper">
+  <!-- 添加锚点 -->
+  <!-- <anchor :cx="leftX" :cy="leftY" /> -->
+  <rect />
   <component :is="graphType" :top="top" :left="left" :text="text" />
 </g>
 </template>
@@ -9,9 +12,10 @@ import start from "./components/start.vue"
 import state from './components/state.vue'
 import condition from './components/condition.vue'
 import end from './components/end.vue'
+import anchor from './components/anchor.vue'
 import type { Canvas,GraphNode } from "@/type/index"
 import type { CSSProperties } from 'vue';
-import { computed,shallowRef } from 'vue';
+import { computed,shallowRef,ref,onMounted } from 'vue';
 const props = defineProps<{ node:Canvas.NodeItem,activeId:string }>()
 const top = computed(() => props.node.top)
 const left = computed(() => props.node.left)
@@ -26,7 +30,12 @@ const componentList:GraphNode.ComponentList = {
 }
 
 const graphType = componentList[props.node.type]
-console.log("");
+
+// 锚点位置
+const nodeWrapper = ref<Element>()
+
+// const leftX = computed(() => props.node.left - nodeWrapper.value!.getBoundingClientRect().width / 2 )
+// const leftY = computed(() => props.node.top - nodeWrapper.value!.getBoundingClientRect().height / 2)
 
 
 const wrapperStyle = computed(() =>  ({
@@ -41,9 +50,6 @@ const wrapperStyle = computed(() =>  ({
 
 <style scoped lang="less">
 .node-wrapper {
-  padding: 5px;
-  border-radius: 5px;
-  box-sizing: border-box;
-  // background-color: #fff;
+
 }
 </style>
