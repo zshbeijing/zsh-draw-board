@@ -6,15 +6,17 @@
   @dragstart="dragStart($event)"
   @dragover="dragOver($event)"
 >
-  <GraphNode 
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <GraphNode
+    :id="`${item.id}`" 
     v-for="item in canvasJson.nodeList"
     :node="item"
     :activeId="activeId"
     @click="activeNodeHandler(item)"
     @mousedown="mousedownHandler(item,$event)"
-    @mousemove="mousemoveHandler(item,$event)"
-    @mouseup="mouseupHandler"
+    @mouseup="mouseupHandler(item,$event)"
     /> 
+</svg>
 </div>
 </template>
 
@@ -39,30 +41,85 @@ const activeNodeHandler = (item:Canvas.NodeItem) => {
 }
 
 // graphNode移动
-const moveIndex = ref<number | undefined>(0)
+const moveIndex = ref<number | undefined>()
 const isMove = ref<Boolean>(false)
+const moveDom = ref<Element>()
 const downTop = ref<number>(0)
 const downLeft = ref<number>(0)
+const viewHeight = ref<number>()
+const viewWidth = ref<number>()
+const viewTop = ref<number>()
+const viewLeft = ref<number>()
 
+onMounted(() => {
+  viewLeft.value = canvasRef.value?.getBoundingClientRect().left || 0
+  viewTop.value = canvasRef.value?.getBoundingClientRect().top || 0
+  viewHeight.value = canvasRef.value?.getBoundingClientRect().height || 0
+  viewWidth.value = canvasRef.value?.getBoundingClientRect().width || 0
+})
+
+// 新版
 const mousedownHandler = (item:Canvas.NodeItem,e:any) => {
-  console.log("mousedownHandler",item,e);
-  const index = canvasJson.nodeList.findIndex((i) => i.id === item.id)
-  moveIndex.value = index
-  downTop.value = e.offsetY
-  downLeft.value = e.offsetX
+  moveIndex.value = canvasJson.nodeList.findIndex(i => i.id === item.id)
+  console.log("E",e);
+  moveDom.value = document.querySelector(`#${item.id}`) || undefined
+  if (!moveDom.value || !item.isDrop) return
+  downTop.value = e.clientY - moveDom.value!.getBoundingClientRect().top - (moveDom.value!.getBoundingClientRect().height /2)
+  downLeft.value = e.clientX - moveDom.value!.getBoundingClientRect().left - (moveDom.value!.getBoundingClientRect().width /2)
   isMove.value = true
+  moveDom.value?.addEventListener("mousemove",mousemoveHandler)
 }
-const mousemoveHandler = (item:Canvas.NodeItem,e:any) => {
-  if (!isMove.value || moveIndex.value === undefined || !item.isDrop) return
-  console.log("move",e);
-  canvasJson.nodeList[moveIndex.value].top += e.offsetY - downTop.value
-  canvasJson.nodeList[moveIndex.value].left += e.offsetX - downLeft.value
+
+const mousemoveHandler = (e:any) => {
+  if (!isMove) return
+  const pointX = e.clientX - downLeft.value - viewLeft.value!
+  const pointY = e.clientY - downTop.value - viewTop.value!
+  // console.log("moveIndex",pointX,pointY);
+  canvasJson.nodeList[moveIndex.value!].top = pointY
+  canvasJson.nodeList[moveIndex.value!].left = pointX
+  // console.log("mousemoveHandler",canvasJson.nodeList[moveIndex.value!]);
 }
-const mouseupHandler = () => {
-  console.log("moveUp");
-  moveIndex.value = undefined
-  isMove.value = false
+
+const mouseupHandler = (e:any,item:Canvas.NodeItem) => {
+  console.log("mouseupHandler");
+  if (!moveDom.value) return
+  moveDom.value.removeEventListener("mousemove",mousemoveHandler)
+  moveDom.value = undefined
 }
+
+// 老版
+// const mousedownHandler = (item:Canvas.NodeItem,e:any) => {
+  // console.log("mousedownHandler",item,e);
+  // const index = canvasJson.nodeList.findIndex((i) => i.id === item.id)
+  // moveIndex.value = index
+  // downTop.value = e.offsetY
+  // downLeft.value = e.offsetX
+  // isMove.value = true
+// }
+
+// const mousemoveHandler = (item:Canvas.NodeItem,e:any) => {
+//   if (!isMove.value || moveIndex.value === undefined || !item.isDrop) return
+//   console.log("move",e);
+//   const moveX = e.offsetX - downLeft.value
+//   const moveY = e.offsetY - downTop.value
+//   canvasJson.nodeList[moveIndex.value].top += moveY
+//   canvasJson.nodeList[moveIndex.value].left += moveX
+// }
+// const mousemoveHandler = (item:Canvas.NodeItem,e:any) => {
+//   if (!isMove.value || moveIndex.value === undefined || !item.isDrop) return
+//   console.log("move",e);
+//   const moveX = e.offsetX - downLeft.value
+//   const moveY = e.offsetY - downTop.value
+//   canvasJson.nodeList[moveIndex.value].top += moveY
+//   canvasJson.nodeList[moveIndex.value].left += moveX
+// }
+// const mouseupHandler = () => {
+//   console.log("moveUp");
+//   moveIndex.value = undefined
+//   isMove.value = false
+// }
+
+
 
 
 

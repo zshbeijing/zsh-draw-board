@@ -1,7 +1,7 @@
 <template>
-<div class="node-wrapper" ref="nodeWrapper" :style="wrapperStyle">
-  <component :is="graphType" v-bind="props.node" />
-</div>
+<g class="node-wrapper" ref="nodeWrapper" :style="wrapperStyle">
+  <component :is="graphType" :top="top" :left="left" :text="text" />
+</g>
 </template>
 
 <script setup lang="ts">
@@ -13,6 +13,9 @@ import type { Canvas,GraphNode } from "@/type/index"
 import type { CSSProperties } from 'vue';
 import { computed,shallowRef } from 'vue';
 const props = defineProps<{ node:Canvas.NodeItem,activeId:string }>()
+const top = computed(() => props.node.top)
+const left = computed(() => props.node.left)
+const text = computed(() => props.node.text)
 
 // component 组件枚举
 const componentList:GraphNode.ComponentList = {
@@ -27,10 +30,10 @@ console.log("");
 
 
 const wrapperStyle = computed(() =>  ({
-  position: "absolute",
-  top: `${ props.node.top }px`,
-  left: `${ props.node.left }px`,
-  transform: `translate(-40px,-40px)`,
+  // position: "absolute",
+  // top: `${ props.node.top }px`,
+  // left: `${ props.node.left }px`,
+  // transform: `translate(-40px,-40px)`,
   border: props.activeId === props.node.id ? "1px dashed #666" : "none"
 }) as CSSProperties)
 

@@ -1,25 +1,29 @@
 <template>
-  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="100" height="70">
-   <polygon 
-    points="0 35, 50 0, 100 35, 50 70"
-    fill-opacity="0" 
-    stroke="white"
-    stroke-width="2"
-   />
-   <text dominant-baseline="middle" x="35" y="35">{{ text }}</text>
- </svg>
- </template>
- 
- <script setup lang="ts">
- import type { Canvas,GraphNode } from "@/type/index"
- const props = defineProps<Canvas.NodeItem>()
- import { computed } from "vue";
- const text = computed(() => props.text)
- 
- </script>
- 
- <style scoped lang="less">
- text {
+  <g transform="translate(-50,-35)">
+    <polygon :points="points" fill-opacity="0" stroke="white" stroke-width="2" />
+    <text text-anchor="middle" dominant-baseline="middle" :x="textX" :y="textY">{{ text }}</text>
+  </g>
+</template>
+
+<script setup lang="ts">
+import type { Canvas, GraphNode } from '@/type/index'
+import { computed } from 'vue'
+const props = defineProps<{
+  text: string
+  left: number
+  top: number
+}>()
+const text = computed(() => props.text)
+const textX = computed(() => String(props.left + 50))
+const textY = computed(() => String(props.top + 35))
+const points = computed(() => {
+  let points = `${props.left} ${props.top + 35}, ${props.left + 50} ${props.top},${props.left + 100} ${props.top + 35}, ${props.left + 50} ${props.top + 70}`
+  return points
+})
+</script>
+
+<style scoped lang="less">
+text {
   cursor: default;
- }
- </style>
+}
+</style>
