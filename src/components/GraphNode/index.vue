@@ -11,8 +11,8 @@
       stroke="black"
       stroke-width="1"
       stroke-dasharray="2 2"
-      width="0"
-      height="0"
+      :width="borderWidth"
+      :height="borderHeight"
     />
     <component ref="graphRef" :is="graphType" :top="top" :left="left" :text="text" :graphProperties="graphProperties" />
   </g>
@@ -49,16 +49,11 @@ const graphType = componentList[props.node.type]
 const nodeWrapper = ref<Element>()
 console.log("nodeWrapper",nodeWrapper);
 
-// const leftX = computed(() => props.node.left - nodeWrapper.value!.getBoundingClientRect().width / 2 )
-// const leftY = computed(() => props.node.top - nodeWrapper.value!.getBoundingClientRect().height / 2)
+
 
 // 边框相关
-// const borderWidth = computed(() => graphRef.value!.getBoundingClientRect().width + 10 || 0)
-// const borderHeight = computed(() => graphRef.value!.getBoundingClientRect().width + 10 || 0)
-console.log();
-
-
-// const borderTransform = computed(() => `translate(-${(graphRef.value!.getBoundingClientRect().width + 10) / 2},${(graphRef.value!.getBoundingClientRect().width + 10) / 2})`)
+const borderWidth = computed(() => props.node.graphProperties.width || props.node.graphProperties.r! *2 || 0)
+const borderHeight = computed(() => props.node.graphProperties.height || props.node.graphProperties.r! * 2 || 0)
 </script>
 
 <style scoped lang="less">
