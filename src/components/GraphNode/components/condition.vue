@@ -1,5 +1,5 @@
 <template>
-  <g :transform="`translate(-${(props.graphProperties.width! || 0) / 2},-${(props.graphProperties.height! || 0 )/ 2})`">
+  <g>
     <polygon :points="points" fill-opacity="0" stroke="white" stroke-width="2" />
     <text text-anchor="middle" dominant-baseline="middle" :x="textX" :y="textY">{{ text }}</text>
   </g>

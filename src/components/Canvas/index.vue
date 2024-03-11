@@ -13,8 +13,8 @@
     :node="item"
     :activeId="activeId"
     @click="activeNodeHandler(item)"
-    @mousedown="mousedownHandler(item,$event)"
-    @mouseup="mouseupHandler(item,$event)"
+    @down="mousedownHandler"
+    @up="mouseupHandler"
     /> 
 </svg>
 </div>
@@ -62,11 +62,10 @@ onMounted(() => {
 // 新版
 const mousedownHandler = (item:Canvas.NodeItem,e:any) => {
   moveIndex.value = canvasJson.nodeList.findIndex(i => i.id === item.id)
-  console.log("E",e);
   moveDom.value = document.querySelector(`#${item.id}`) || undefined
   if (!moveDom.value || !item.isDrop) return
-  downTop.value = e.clientY - moveDom.value!.getBoundingClientRect().top - (moveDom.value!.getBoundingClientRect().height /2)
-  downLeft.value = e.clientX - moveDom.value!.getBoundingClientRect().left - (moveDom.value!.getBoundingClientRect().width /2)
+  downTop.value = e.clientY - moveDom.value!.getBoundingClientRect().top
+  downLeft.value = e.clientX - moveDom.value!.getBoundingClientRect().left
   isMove.value = true
   canvasRef.value?.addEventListener("mousemove",mousemoveHandler)
 }
@@ -75,20 +74,20 @@ const mousemoveHandler = (e:any) => {
   if (!isMove || !moveDom.value) return
   const pointX = e.clientX - downLeft.value - viewLeft.value!
   const pointY = e.clientY - downTop.value - viewTop.value!
-  const halfDomWidth = moveDom.value!.getBoundingClientRect().width / 2
-  const halfDomHeight = moveDom.value!.getBoundingClientRect().height / 2
-  const flagX = inBound(pointX,halfDomWidth,viewWidth.value)
+  const DomWidth = moveDom.value!.getBoundingClientRect().width
+  const DomHeight = moveDom.value!.getBoundingClientRect().height
+  const flagX = inBound(pointX,DomWidth,viewWidth.value)
   if (flagX) {
     canvasJson.nodeList[moveIndex.value!].left = pointX
   }
-  const flagY = inBound(pointY,halfDomHeight,viewHeight.value)
+  const flagY = inBound(pointY,DomHeight,viewHeight.value)
   if (flagY) {
     canvasJson.nodeList[moveIndex.value!].top = pointY
   }
 }
 
-const inBound = (nodeDistance:number,halfLength:number,viewLength:number):Boolean => {
-  return halfLength < nodeDistance  && nodeDistance <   (viewLength - halfLength)
+const inBound = (nodeDistance:number,domLength:number,viewLength:number):Boolean => {
+  return 0 < nodeDistance  && nodeDistance <   (viewLength - domLength)
 }
 
 const mouseupHandler = (e:any,item:Canvas.NodeItem) => {
@@ -108,7 +107,7 @@ const dropNow = (event:DragEvent) => {
   const defaultJson = JSON.parse(event.dataTransfer!.getData("nodeJson")) as Material.MaterialItem
   console.log("defaultJson",defaultJson);
   
-  const json = useCreateJson(defaultJson,offsetX,offsetY)
+  const json = useCreateJson(defaultJson,offsetX,offsetY, viewWidth.value, viewHeight.value)
   canvasJson.nodeList.push(json)
   console.log("canvasJson",canvasJson);
 }
@@ -120,10 +119,6 @@ const dragStart = (event:DragEvent) => {
 const dragOver = (event:DragEvent) => {
   event.preventDefault()
   // console.log("dragOver",event);
-}
-
-const jsonRender = () => {
-  
 }
 
 

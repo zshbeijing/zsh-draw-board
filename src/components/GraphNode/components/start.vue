@@ -1,5 +1,5 @@
 <template>
-  <g :transform="`translate(-${props.graphProperties.r! || 0},-${(props.graphProperties.r! || 0 )})`">
+  <g>
     <circle :cx="polygonX" :cy="polygonY" :r="props.graphProperties.r" stroke="white" fill-opacity="0" stroke-width="2" />
     <text text-anchor="middle" dominant-baseline="middle" :x="textX" :y="textY">{{ text }}</text>
   </g>
