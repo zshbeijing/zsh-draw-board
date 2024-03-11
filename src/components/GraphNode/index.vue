@@ -14,10 +14,10 @@
       @mouseup="mouseupHandler($event)"
     />
      <!-- 添加锚点 -->
-    <anchor  :class="`${props.node.id} node-border`" :cx="leftAnchorX" :cy="leftAnchorY" />
-    <anchor  :class="`${props.node.id} node-border`" :cx="rightAnchorX" :cy="rightAnchorY" />
-    <anchor  :class="`${props.node.id} node-border`" :cx="topAnchorX" :cy="topAnchorY" />
-    <anchor  :class="`${props.node.id} node-border`" :cx="bottomAnchorX" :cy="bottomAnchorY" />
+    <anchor anchorDirection="left"  :class="`${props.node.id} node-border`" :cx="leftAnchorX" :cy="leftAnchorY" :node="props.node" />
+    <anchor anchorDirection="right"  :class="`${props.node.id} node-border`" :cx="rightAnchorX" :cy="rightAnchorY" :node="props.node"  />
+    <anchor anchorDirection="top"  :class="`${props.node.id} node-border`" :cx="topAnchorX" :cy="topAnchorY" :node="props.node"  />
+    <anchor anchorDirection="bottom"  :class="`${props.node.id} node-border`" :cx="bottomAnchorX" :cy="bottomAnchorY" :node="props.node"  />
   </g>
 </template>
 

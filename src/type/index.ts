@@ -51,6 +51,7 @@ export namespace Material {
 }
 
 export namespace Canvas {
+    export type LineStateEnum = EnumToUnion<LineState>
     export interface NodeItem {
         // 组件唯一标识
         id?:string
@@ -69,9 +70,20 @@ export namespace Canvas {
         properties:Object
     }
 
+    export enum DirectionEnum {
+        上 = 'top',
+        下 = 'bottom',
+        左 = 'left',
+        右 = 'right'
+    }
+    export type Direction = EnumToUnion<DirectionEnum>
+
     export interface LineItem {
+      id:string
       fromId:string
+      formDirection:Direction
       toId:string
+      toDirection:Direction
       label:string
       lineType: EnumToUnion<LineType>
     }
@@ -80,6 +92,12 @@ export namespace Canvas {
       nodeList:NodeItem[],
       lineList:LineItem[]
     } 
+
+    export enum LineState {
+      开始 = "drawStart",
+      进行 = "drawIng",
+      结束 = "drawEnd",
+    }
 }
 
 export namespace GraphNode {

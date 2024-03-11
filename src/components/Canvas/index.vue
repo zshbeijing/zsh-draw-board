@@ -1,46 +1,57 @@
 <template>
-<div 
-  ref="canvasRef"
-  class="canvas_wrapper"
-  @drop="dropNow($event)"
-  @dragstart="dragStart($event)"
-  @dragover="dragOver($event)"
->
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-  <GraphNode
-    :id="`${item.id}`" 
-    v-for="item in canvasJson.nodeList"
-    :node="item"
-    :activeId="activeId"
-    @click="activeNodeHandler(item)"
-    @down="mousedownHandler"
-    @up="mouseupHandler"
-    /> 
-</svg>
-</div>
+  <div ref="canvasRef" class="canvas_wrapper" @drop="dropNow($event)" @dragover="dragOver($event)">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+      <GraphNode
+        :id="`${item.id}`"
+        v-for="item in canvasJson.nodeList"
+        :node="item"
+        :activeId="activeId"
+        @click="activeNodeHandler(item)"
+        @down="mousedownHandler"
+        @up="mouseupHandler"
+      />
+      <line id="subLine" v-if="subLineVisible" :x1="subLineX1" :y1="subLineY1" :x2="subLineX2" :y2="subLineY2" stroke="#000" stroke-dasharray="3,2" stroke-width="2" />
+    </svg>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { reactive,ref,onMounted } from 'vue'
-import type { Canvas,Material } from '@/type/index'
+import { reactive, ref, onMounted, provide } from 'vue'
+import { Canvas, type Material } from '@/type/index'
 import { useCreateJson } from '@/hooks/useNodeJson'
 import GraphNode from '@/components/GraphNode/index.vue'
+import { useDrawLine } from '@/hooks/useDrawLine'
 
 const canvasJson = reactive<Canvas.CanvasJson>({
   nodeList: [],
   lineList: []
-});
+})
 const canvasRef = ref<HTMLDivElement>()
 
-// graphNode选中
-const activeId = ref<string>("")
-const activeNodeHandler = (item:Canvas.NodeItem) => {
-  if (activeId.value === item.id) return
-  activeId.value = item.id!
-  console.log("activeId",activeId.value);
+// 物料区拖动
+const dropNow = (event: DragEvent) => {
+  const { offsetX, offsetY } = event
+  const defaultJson = JSON.parse(event.dataTransfer!.getData('nodeJson')) as Material.MaterialItem
+  console.log('defaultJson', defaultJson)
+
+  const json = useCreateJson(defaultJson, offsetX, offsetY, viewWidth.value, viewHeight.value)
+  canvasJson.nodeList.push(json)
+  console.log('canvasJson', canvasJson)
 }
 
-// graphNode移动
+const dragOver = (event: DragEvent) => {
+  event.preventDefault()
+}
+
+// graphNode选中
+const activeId = ref<string>('')
+const activeNodeHandler = (item: Canvas.NodeItem) => {
+  if (activeId.value === item.id) return
+  activeId.value = item.id!
+  console.log('activeId', activeId.value)
+}
+
+// node移动相关属性
 const moveIndex = ref<number | undefined>()
 const isMove = ref<Boolean>(false)
 const moveDom = ref<Element>()
@@ -59,72 +70,103 @@ onMounted(() => {
   viewWidth.value = canvasRef.value?.getBoundingClientRect().width || 0
 })
 
-// 新版
-const mousedownHandler = (item:Canvas.NodeItem,e:any) => {
-  moveIndex.value = canvasJson.nodeList.findIndex(i => i.id === item.id)
+// node移动
+const mousedownHandler = (item: Canvas.NodeItem, e: any) => {
+  moveIndex.value = canvasJson.nodeList.findIndex((i) => i.id === item.id)
   moveDom.value = document.querySelector(`#${item.id}`) || undefined
   if (!moveDom.value || !item.isDrop) return
   downTop.value = e.clientY - moveDom.value!.getBoundingClientRect().top
   downLeft.value = e.clientX - moveDom.value!.getBoundingClientRect().left
   isMove.value = true
-  canvasRef.value?.addEventListener("mousemove",mousemoveHandler)
+  canvasRef.value?.addEventListener('mousemove', mousemoveHandler)
 }
 
-const mousemoveHandler = (e:any) => {
+const mousemoveHandler = (e: any) => {
   if (!isMove || !moveDom.value) return
   const pointX = e.clientX - downLeft.value - viewLeft.value!
   const pointY = e.clientY - downTop.value - viewTop.value!
   const DomWidth = moveDom.value!.getBoundingClientRect().width
   const DomHeight = moveDom.value!.getBoundingClientRect().height
-  const flagX = inBound(pointX,DomWidth,viewWidth.value)
+  const flagX = inBound(pointX, DomWidth, viewWidth.value)
   if (flagX) {
     canvasJson.nodeList[moveIndex.value!].left = pointX
   }
-  const flagY = inBound(pointY,DomHeight,viewHeight.value)
+  const flagY = inBound(pointY, DomHeight, viewHeight.value)
   if (flagY) {
     canvasJson.nodeList[moveIndex.value!].top = pointY
   }
 }
 
-const inBound = (nodeDistance:number,domLength:number,viewLength:number):Boolean => {
-  return 0 < nodeDistance  && nodeDistance <   (viewLength - domLength)
-}
-
-const mouseupHandler = (e:any,item:Canvas.NodeItem) => {
+const mouseupHandler = (e: any, item: Canvas.NodeItem) => {
   if (!moveDom.value) return
-  canvasRef.value?.removeEventListener("mousemove",mousemoveHandler)
+  canvasRef.value?.removeEventListener('mousemove', mousemoveHandler)
   moveDom.value = undefined
   isMove.value = false
 }
 
+// 移动边界判断
+const inBound = (nodeDistance: number, domLength: number, viewLength: number): Boolean => {
+  return 0 < nodeDistance && nodeDistance < viewLength - domLength
+}
+
+// 连线相关
+let drawState = ref<Canvas.LineState>(Canvas.LineState.结束)
+let drawJson = ref<Canvas.LineItem>()
+let subLineX1 = ref(0)
+let subLineY1 = ref(0)
+let subLineX2 = ref(100)
+let subLineY2 = ref(200)
+const subLineVisible = ref<Boolean>(false)
+const subLineMoveHandler = (e:any) => {
+  const { offsetX,offsetY } = e
+    subLineX2.value = offsetX
+    subLineY2.value = offsetY
+}
 
 
+const drawStart = (x:number,y:number,id:string,direction:Canvas.Direction) => {
+  console.log("drawStart");
+  drawState.value = Canvas.LineState.开始
+  const { InitLineJson } = useDrawLine()
+  const json:Canvas.LineItem = InitLineJson()
+  json.fromId = id!
+  json.formDirection = direction
+  drawJson.value = json
+  subLineX1.value = x;
+  subLineY1.value = y
+  subLineX2.value = x;
+  subLineY2.value = y
+  subLineVisible.value = true
+  canvasRef.value?.addEventListener("mousemove",subLineMoveHandler)
+}
+const drawEnd = () => {
+  console.log("drawEnd");
+  drawState.value = Canvas.LineState.结束
+  drawJson.value =  undefined
+  subLineVisible.value = false
+  canvasRef.value?.removeEventListener("mousemove",subLineMoveHandler)
+}
 
+const drawFinish = (id:string,direction:Canvas.Direction) => {
+  console.log("drawFinish");
+  drawJson.value!.toId = id
+  drawJson.value!.toDirection = direction
+  lineRender(drawJson.value)
+  drawEnd()
+}
 
-
-const dropNow = (event:DragEvent) => {
-  const { offsetX, offsetY } = event
-  const defaultJson = JSON.parse(event.dataTransfer!.getData("nodeJson")) as Material.MaterialItem
-  console.log("defaultJson",defaultJson);
+const lineRender = (obj:any) => {
+  const json = JSON.parse(JSON.stringify(obj))
+  console.log("json",json);
   
-  const json = useCreateJson(defaultJson,offsetX,offsetY, viewWidth.value, viewHeight.value)
-  canvasJson.nodeList.push(json)
-  console.log("canvasJson",canvasJson);
-}
-
-const dragStart = (event:DragEvent) => {
-  console.log("dragStart",event);
-}
-
-const dragOver = (event:DragEvent) => {
-  event.preventDefault()
-  // console.log("dragOver",event);
 }
 
 
-
-
-
+provide('drawState', drawState)
+provide('drawJson',drawJson)
+provide("drawStart",drawStart)
+provide("drawEnd",drawEnd)
+provide("drawFinish",drawFinish)
 
 </script>
 
