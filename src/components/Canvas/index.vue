@@ -10,22 +10,26 @@
         @down="mousedownHandler"
         @up="mouseupHandler"
       />
+      <Line 
+      :id="`${line.id}`"
+      :key="line.id" 
+      v-for="line in canvasJson.lineList"
+      :line="line"
+      />
       <line id="subLine" v-if="subLineVisible" :x1="subLineX1" :y1="subLineY1" :x2="subLineX2" :y2="subLineY2" stroke="#000" stroke-dasharray="3,2" stroke-width="2" />
     </svg>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted, provide } from 'vue'
+import { reactive, ref, onMounted, provide,inject } from 'vue'
 import { Canvas, type Material } from '@/type/index'
 import { useCreateJson } from '@/hooks/useNodeJson'
 import GraphNode from '@/components/GraphNode/index.vue'
+import Line from '@/components/Line/index.vue'
 import { useDrawLine } from '@/hooks/useDrawLine'
 
-const canvasJson = reactive<Canvas.CanvasJson>({
-  nodeList: [],
-  lineList: []
-})
+const canvasJson:Canvas.CanvasJson = inject("canvasJson")!
 const canvasRef = ref<HTMLDivElement>()
 
 // 物料区拖动
@@ -138,6 +142,7 @@ const drawStart = (x:number,y:number,id:string,direction:Canvas.Direction) => {
   subLineY2.value = y
   subLineVisible.value = true
   canvasRef.value?.addEventListener("mousemove",subLineMoveHandler)
+  
 }
 const drawEnd = () => {
   console.log("drawEnd");
@@ -151,14 +156,21 @@ const drawFinish = (id:string,direction:Canvas.Direction) => {
   console.log("drawFinish");
   drawJson.value!.toId = id
   drawJson.value!.toDirection = direction
-  lineRender(drawJson.value)
+  lineRender(drawJson.value!)
   drawEnd()
 }
 
-const lineRender = (obj:any) => {
-  const json = JSON.parse(JSON.stringify(obj))
-  console.log("json",json);
-  
+const lineRender = (obj:Canvas.LineItem) => {
+  if(canvasJson.lineList.length === 0) {
+    canvasJson.lineList.push(obj)
+  } else {
+    const { filterLine } = useDrawLine()
+    let flag = canvasJson.lineList.some(i => {
+    return filterLine(obj,i)
+    })
+    if (flag) return
+    canvasJson.lineList.push(obj)
+  }
 }
 
 

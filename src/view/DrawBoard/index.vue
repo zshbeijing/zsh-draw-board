@@ -8,7 +8,7 @@
           <Material />
         </div>
         <div class="canvas">
-            <Canvas />
+            <CanvasBox />
         </div>
         <div class="operation">operation</div>
     </div>
@@ -18,7 +18,15 @@
 <script setup lang="ts">
 import Head from '@/components/Head/index.vue'
 import Material from '@/components/Material/index.vue'
-import Canvas from '@/components/Canvas/index.vue'
+import CanvasBox from '@/components/Canvas/index.vue'
+import { type Canvas } from '@/type/index'
+import { reactive,provide } from 'vue'
+
+const canvasJson = reactive<Canvas.CanvasJson>({
+  nodeList: [],
+  lineList: []
+})
+provide("canvasJson",canvasJson)
 
 </script>
 

@@ -50,6 +50,8 @@ export namespace Material {
     }
 }
 
+
+
 export namespace Canvas {
     export type LineStateEnum = EnumToUnion<LineState>
     export interface NodeItem {
@@ -66,6 +68,9 @@ export namespace Canvas {
         state:NodeState
         // 是否可移动
         isDrop:Boolean
+        width?:number
+        height?:number
+        r?:number
         graphProperties:GraphProperties
         properties:Object
     }

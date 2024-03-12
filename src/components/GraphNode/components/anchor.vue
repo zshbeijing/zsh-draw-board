@@ -26,9 +26,12 @@ const drawFinish:Function = inject("drawFinish")!
 const mousedownHandler = (e:any) => {
   e.stopPropagation();
   console.log("mousedownHandler",drawState.value);
+  console.log("drawJson1",drawJson.value);
   if (drawState.value === Canvas.LineState.结束) {
     drawStart(props.cx,props.cy,props.node.id,props.anchorDirection)
-  } else if (drawState.value === Canvas.LineState.进行 && drawJson.value) {
+    console.log("drawStart222",drawState.value); 
+  } else if (drawState.value === Canvas.LineState.开始) {
+    console.log("drawing2",props.node.id);
     if (props.node.id === drawJson.value.fromId) {
       drawEnd()
       return
@@ -36,7 +39,9 @@ const mousedownHandler = (e:any) => {
       drawFinish(props.node.id,props.anchorDirection)
     }
   } else {
-
+    console.log("drawing3");
+    
+    drawEnd()
   }
 }
 

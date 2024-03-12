@@ -40,5 +40,12 @@ export const useCreateJson = (json:Material.MaterialItem, offsetX:number, offset
     properties: {
     }
   }
+  if (r) {
+    obj.r = r
+  }
+  if (width && height) {
+    obj.width = width
+    obj.height = height
+  }
   return obj
 }
