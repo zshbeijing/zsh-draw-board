@@ -5,8 +5,6 @@ import { getId } from '@/until/index'
 // 根据类型获取物料json
 export const useCreateJson = (json:Material.MaterialItem, offsetX:number, offsetY:number,viewWidth:number,viewHeight:number) => {
   let newLeft,newTop
-  console.log("viewWidth",viewWidth,viewHeight);
-  
   const { r ,width,height } = json.graphProperties
   if (r) {
     newLeft = getCoordinate(offsetX,viewWidth,r)

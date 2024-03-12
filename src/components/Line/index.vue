@@ -63,7 +63,6 @@ import { inject,computed } from "vue"
   const y1 = computed(() => getCoordinate(props.line.fromId,props.line.formDirection,canvasJson)!.y)
   const x2 = computed(() => getCoordinate(props.line.toId,props.line.toDirection,canvasJson)!.x)
   const y2 = computed(() => getCoordinate(props.line.toId,props.line.toDirection,canvasJson)!.y)
-
   
 </script>
 

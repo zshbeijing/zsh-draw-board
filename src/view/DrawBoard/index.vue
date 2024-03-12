@@ -10,7 +10,9 @@
         <div class="canvas">
             <CanvasBox />
         </div>
-        <div class="operation">operation</div>
+        <div class="operation">
+            <Operation />
+        </div>
     </div>
 </div>
 </template>
@@ -19,14 +21,39 @@
 import Head from '@/components/Head/index.vue'
 import Material from '@/components/Material/index.vue'
 import CanvasBox from '@/components/Canvas/index.vue'
+import Operation from '@/components/Operation/index.vue'
 import { type Canvas } from '@/type/index'
-import { reactive,provide } from 'vue'
+import { reactive,provide,ref } from 'vue'
 
-const canvasJson = reactive<Canvas.CanvasJson>({
+// 图表json
+let canvasJson = reactive<Canvas.CanvasJson>({
   nodeList: [],
   lineList: []
 })
+// 导入函数
+const importCanvas = (newJson:string) => {
+  console.log("importCanvas",newJson);
+  canvasJson.nodeList = JSON.parse(newJson).nodeList
+  canvasJson.lineList = JSON.parse(newJson).lineList
+}
+// 激活nodeId
+const activeId = ref<string>('')
+
+//文本替换
+const changeText = (text:string,activeId:string) => {
+    console.log("activeId",activeId);
+    console.log("text",text);
+   const index = canvasJson.nodeList.findIndex(i => i.id === activeId)
+   console.log("index",index);
+   if (index > -1) {
+     canvasJson.nodeList[index].text = text
+   }
+}
+
+provide("activeId",activeId)
 provide("canvasJson",canvasJson)
+provide("importCanvas",importCanvas)
+provide("changeText",changeText)
 
 </script>
 

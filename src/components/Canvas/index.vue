@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted, provide,inject } from 'vue'
+import { ref, onMounted, provide,inject,type Ref } from 'vue'
 import { Canvas, type Material } from '@/type/index'
 import { useCreateJson } from '@/hooks/useNodeJson'
 import GraphNode from '@/components/GraphNode/index.vue'
@@ -40,7 +40,6 @@ const dropNow = (event: DragEvent) => {
 
   const json = useCreateJson(defaultJson, offsetX, offsetY, viewWidth.value, viewHeight.value)
   canvasJson.nodeList.push(json)
-  console.log('canvasJson', canvasJson)
 }
 
 const dragOver = (event: DragEvent) => {
@@ -48,11 +47,10 @@ const dragOver = (event: DragEvent) => {
 }
 
 // graphNode选中
-const activeId = ref<string>('')
+const activeId:Ref<string> = inject("activeId")!
 const activeNodeHandler = (item: Canvas.NodeItem) => {
   if (activeId.value === item.id) return
   activeId.value = item.id!
-  console.log('activeId', activeId.value)
 }
 
 // node移动相关属性
