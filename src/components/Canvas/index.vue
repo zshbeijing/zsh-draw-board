@@ -121,8 +121,9 @@ let subLineY2 = ref(200)
 const subLineVisible = ref<Boolean>(false)
 const subLineMoveHandler = (e:any) => {
   const { offsetX,offsetY } = e
-    subLineX2.value = offsetX
-    subLineY2.value = offsetY
+  // 添加偏移防止阻挡node的hover事件
+    subLineX2.value = offsetX - 2
+    subLineY2.value = offsetY - 2
 }
 
 

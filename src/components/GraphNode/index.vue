@@ -86,15 +86,16 @@ const topAnchorY = computed(() => props.node.top)
 const bottomAnchorX = computed(() => props.node.left + borderWidth.value / 2)
 const bottomAnchorY = computed(() => props.node.top + borderHeight.value)
 
-const mouseenterHandler = () => {
+const mouseenterHandler = (e) => {
   if (!flag.value) {
     const border = document.querySelectorAll(`.${props.node.id}`)
+    console.log("enter");
     border.forEach(i => {
         i.style.visibility = 'visible'
       })
   }
 }
-const mouseleaveHandler = () => {
+const mouseleaveHandler = (e) => {
   if (!flag.value) {
     const border = document.querySelectorAll(`.${props.node.id}`)
     border.forEach(i => {
