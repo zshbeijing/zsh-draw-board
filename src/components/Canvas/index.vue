@@ -1,5 +1,7 @@
 <template>
-  <div ref="canvasRef" class="canvas_wrapper" @drop="dropNow($event)" @dragover="dragOver($event)">
+  <div ref="canvasRef" class="canvas_wrapper" @drop="dropNow($event)" @dragover="dragOver($event)"
+  @dblclick="clearHandler"
+  >
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
       <GraphNode
         :id="`${item.id}`"
@@ -36,8 +38,6 @@ const canvasRef = ref<HTMLDivElement>()
 const dropNow = (event: DragEvent) => {
   const { offsetX, offsetY } = event
   const defaultJson = JSON.parse(event.dataTransfer!.getData('nodeJson')) as Material.MaterialItem
-  console.log('defaultJson', defaultJson)
-
   const json = useCreateJson(defaultJson, offsetX, offsetY, viewWidth.value, viewHeight.value)
   canvasJson.nodeList.push(json)
 }
@@ -171,12 +171,17 @@ const lineRender = (obj:Canvas.LineItem) => {
   }
 }
 
-
 provide('drawState', drawState)
 provide('drawJson',drawJson)
 provide("drawStart",drawStart)
 provide("drawEnd",drawEnd)
 provide("drawFinish",drawFinish)
+
+// 清除事件
+const clearHandler = () => {
+  drawEnd()
+  activeId.value = ""
+}
 
 </script>
 
